@@ -1,0 +1,30 @@
+#jsonschema_data{
+    display: flex;
+    flex-direction: column;
+    gap: 2.5px;
+}
+
+#jsonschema_data div{
+    margin-left: 20px;
+}
+
+#query-space{
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#queryarea textarea{
+    background-color: lightgrey;
+    padding: 10px;
+    font-size: 15px;
+    height: 35vh;
+    width: 60vw;
+}
+
+#merge-table-list{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}

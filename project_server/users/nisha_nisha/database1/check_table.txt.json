@@ -1,0 +1,43 @@
+{
+  "filetype": "table",
+  "rows": [
+    {
+      "id": 1,
+      "name": "vansh"
+    },
+    {
+      "id": 2,
+      "name": "rekha"
+    },
+    {
+      "id": 3,
+      "name": "kishor"
+    },
+    {
+      "id": 4,
+      "name": "satish"
+    },
+    {
+      "id": 5,
+      "name": "rahul"
+    }
+  ],
+  "columns": [
+    {
+      "name": "id",
+      "type": "int",
+      "constraints": [
+        "serial",
+        "primary_key"
+      ]
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "constraints": [
+        "not_null",
+        "primary_key"
+      ]
+    }
+  ]
+}

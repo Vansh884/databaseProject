@@ -1,0 +1,84 @@
+{
+  "filetype": "table",
+  "rows": [
+    {
+      "ID": 2,
+      "PERCENTAGE": 56.4,
+      "PASS": "PASS"
+    },
+    {
+      "ID": 3,
+      "PERCENTAGE": 65.78,
+      "PASS": "PASS"
+    },
+    {
+      "ID": 4,
+      "PERCENTAGE": 87.6,
+      "PASS": "PASS"
+    },
+    {
+      "ID": 5,
+      "PERCENTAGE": 76.5,
+      "PASS": "PASS"
+    },
+    {
+      "ID": 9,
+      "PERCENTAGE": 67.5,
+      "PASS": "PASS"
+    },
+    {
+      "ID": 10,
+      "PERCENTAGE": 86.2,
+      "PASS": "PASS"
+    },
+    {
+      "ID": 11,
+      "PERCENTAGE": 88.2,
+      "PASS": "PASS"
+    },
+    {
+      "ID": 1,
+      "PERCENTAGE": 45.6,
+      "PASS": "FAIL"
+    },
+    {
+      "ID": 6,
+      "PERCENTAGE": 34.5,
+      "PASS": "FAIL"
+    },
+    {
+      "ID": 7,
+      "PERCENTAGE": 45.6,
+      "PASS": "FAIL"
+    },
+    {
+      "ID": 8,
+      "PERCENTAGE": 45.7,
+      "PASS": "FAIL"
+    }
+  ],
+  "columns": [
+    {
+      "name": "ID",
+      "type": "int",
+      "constraints": [
+        "primary_key",
+        "serial"
+      ]
+    },
+    {
+      "name": "PERCENTAGE",
+      "type": "float",
+      "constraints": [
+        "not_null"
+      ]
+    },
+    {
+      "name": "PASS",
+      "type": "string",
+      "constraints": [
+        "not_null"
+      ]
+    }
+  ]
+}

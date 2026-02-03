@@ -1,0 +1,42 @@
+[
+  {
+    "firstname": "nisha",
+    "lastname": "nisha",
+    "phone": "123",
+    "username": "nisha",
+    "password": "$2b$10$SbQr7NF7VbL4nJYgV3p6ceqQHl/rwUoKhXMkoDqAm4FfbkklXoXqu",
+    "submit": "Sign Up",
+    "last_logged_in": "2026-01-22T16:34:35.604Z",
+    "previous_login": "2026-01-22T04:36:24.058Z"
+  },
+  {
+    "firstname": "satish",
+    "lastname": "kumar",
+    "phone": "123",
+    "username": "satish",
+    "password": "$2b$10$upbv3Rcdx.kossj7zYXpFu40.8M762tKXgs8VXqCjWva6dVKhfe7e",
+    "submit": "Sign Up",
+    "last_logged_in": "2026-01-09T19:13:30.892Z",
+    "previous_login": "2026-01-09T17:29:39.206Z"
+  },
+  {
+    "firstname": "vanshbhopal",
+    "lastname": "vansh",
+    "phone": "123",
+    "username": "vansh",
+    "password": "$2b$10$a7/zjLV5u5X4oGADiQY1tuRvvRywQGRnGDXgn.vbVNQhjxnbY.elO",
+    "submit": "Sign Up",
+    "last_logged_in": "2026-01-17T18:32:40.579Z",
+    "previous_login": "2026-01-17T18:32:23.646Z"
+  },
+  {
+    "firstname": "rahul",
+    "lastname": "bawa",
+    "phone": "123",
+    "username": "rahul",
+    "password": "$2b$10$cuZHZwOsCFjsa543zM8g5.QzOl7j8NRVBvIYl7RwEifIUQQdTPgS6",
+    "submit": "Sign Up",
+    "last_logged_in": "2026-01-22T05:22:35.163Z",
+    "previous_login": "2026-01-22T04:49:54.516Z"
+  }
+]

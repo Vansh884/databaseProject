@@ -1,0 +1,42 @@
+{
+  "filetype": "table",
+  "rows": [
+    {
+      "ID": "1",
+      "AGE": 10
+    },
+    {
+      "ID": "2",
+      "AGE": 20
+    },
+    {
+      "ID": "3",
+      "AGE": 20
+    },
+    {
+      "ID": "4",
+      "AGE": 20
+    },
+    {
+      "ID": "5",
+      "AGE": 20
+    }
+  ],
+  "columns": [
+    {
+      "name": "ID",
+      "type": "string",
+      "expression": "",
+      "constraints": [
+        "primary_key",
+        "serial"
+      ]
+    },
+    {
+      "name": "AGE",
+      "type": "derivative",
+      "expression": "IF(ID==\"1\",10,20)",
+      "constraints": []
+    }
+  ]
+}

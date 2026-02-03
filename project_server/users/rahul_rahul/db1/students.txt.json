@@ -1,0 +1,47 @@
+{
+  "filetype": "table",
+  "rows": [
+    {
+      "id": 1,
+      "name": "vansh",
+      "age": 40
+    },
+    {
+      "id": 2,
+      "name": "rahul",
+      "age": 40
+    },
+    {
+      "id": 3,
+      "name": "rahul",
+      "age": 40
+    }
+  ],
+  "columns": [
+    {
+      "name": "id",
+      "type": "int",
+      "expression": "",
+      "constraints": [
+        "primary_key",
+        "serial"
+      ]
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "expression": "",
+      "constraints": [
+        "not_null"
+      ]
+    },
+    {
+      "name": "age",
+      "type": "int",
+      "expression": "",
+      "constraints": [
+        "not_null"
+      ]
+    }
+  ]
+}

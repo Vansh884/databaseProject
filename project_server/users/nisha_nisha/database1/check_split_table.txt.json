@@ -1,0 +1,20 @@
+{
+  "filetype": "table",
+  "rows": [
+    {
+      "Gender": "male"
+    },
+    {
+      "Gender": "female"
+    }
+  ],
+  "columns": [
+    {
+      "name": "Gender",
+      "type": "string",
+      "constraints": [
+        "not_null"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "filetype": "table",
+  "rows": [
+    {
+      "ID": 1,
+      "AGE": 12,
+      "PERCENTAGE": 45.6,
+      "NAME": "VANSH",
+      "PASS": "PASS"
+    },
+    {
+      "ID": 12,
+      "AGE": 102,
+      "PERCENTAGE": 99.9,
+      "NAME": "TANVEER",
+      "PASS": "PASS"
+    },
+    {
+      "ID": 11,
+      "AGE": 45,
+      "PERCENTAGE": 18.2,
+      "NAME": "SATISH",
+      "PASS": "FAIL"
+    },
+    {
+      "ID": 9,
+      "AGE": 54,
+      "PERCENTAGE": 29.5,
+      "NAME": "ROOP",
+      "PASS": "FAIL"
+    },
+    {
+      "ID": 3,
+      "AGE": 23,
+      "PERCENTAGE": 25.78,
+      "NAME": "RACHIT",
+      "PASS": "FAIL"
+    },
+    {
+      "ID": 2,
+      "AGE": 13,
+      "PERCENTAGE": 56.4,
+      "NAME": "PRIYA",
+      "PASS": "PASS"
+    },
+    {
+      "ID": 8,
+      "AGE": 67,
+      "PERCENTAGE": 45.7,
+      "NAME": "PARMEET",
+      "PASS": "PASS"
+    },
+    {
+      "ID": 6,
+      "AGE": 16,
+      "PERCENTAGE": 44.5,
+      "NAME": "MUNISH",
+      "PASS": "PASS"
+    },
+    {
+      "ID": 10,
+      "AGE": 73,
+      "PERCENTAGE": 86.2,
+      "NAME": "MOHIT",
+      "PASS": "PASS"
+    },
+    {
+      "ID": 4,
+      "AGE": 45,
+      "PERCENTAGE": 17.6,
+      "NAME": "LAXMAN",
+      "PASS": "FAIL"
+    },
+    {
+      "ID": 5,
+      "AGE": 34,
+      "PERCENTAGE": 6.5,
+      "NAME": "KISHOR",
+      "PASS": "FAIL"
+    },
+    {
+      "ID": 7,
+      "AGE": 17,
+      "PERCENTAGE": 21.6,
+      "NAME": "KARTIK",
+      "PASS": "FAIL"
+    }
+  ],
+  "columns": [
+    {
+      "name": "ID",
+      "type": "int",
+      "expression": "",
+      "constraints": [
+        "primary_key",
+        "serial"
+      ]
+    },
+    {
+      "name": "AGE",
+      "type": "int",
+      "expression": "",
+      "constraints": [
+        "not_null"
+      ]
+    },
+    {
+      "name": "PERCENTAGE",
+      "type": "float",
+      "expression": "",
+      "constraints": [
+        "not_null"
+      ]
+    },
+    {
+      "name": "NAME",
+      "type": "string",
+      "expression": "",
+      "constraints": [
+        "not_null",
+        "unique"
+      ]
+    },
+    {
+      "name": "PASS",
+      "type": "string",
+      "expression": "",
+      "constraints": [
+        "not_null"
+      ]
+    }
+  ]
+}

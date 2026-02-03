@@ -1,0 +1,96 @@
+{
+  "filetype": "json",
+  "name": "vansh",
+  "age": 23,
+  "height": 123.45,
+  "subjects": "[maths,english,[punjabi, hindi]]",
+  "nest": "'['vansh','bhopal',['is','my','name']]'",
+  "ex": "[hai,ga]",
+  "hey": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    "vansh",
+    "bhopal",
+    "name",
+    "is",
+    {
+      "name": [
+        1,
+        2,
+        3
+      ],
+      "value": true,
+      "hasii": true
+    }
+  ],
+  "hi": [
+    {
+      "NAmE": "bhopalinsensitive",
+      "NAME": 23.4
+    },
+    {
+      "12": 13,
+      "name": {
+        "name": 123.5,
+        "end": {
+          "hey": "hi",
+          "name": [
+            1,
+            2,
+            3,
+            [
+              1,
+              {
+                "name": "vansh"
+              },
+              {
+                "name": [
+                  1,
+                  2,
+                  {
+                    "name": [
+                      1,
+                      2,
+                      3,
+                      4,
+                      "vansh",
+                      {
+                        "bhopal": 12,
+                        "sharma": 13
+                      }
+                    ],
+                    "Name": "vansh"
+                  },
+                  67
+                ]
+              }
+            ]
+          ]
+        }
+      },
+      "vansh": "bhopal",
+      "bh": [
+        1,
+        2,
+        3,
+        {
+          "bh": "op",
+          "heyaa": "vansh",
+          "al": [
+            1,
+            2,
+            3,
+            34
+          ]
+        }
+      ]
+    },
+    5
+  ],
+  "alName": "tuhaihikutta",
+  "mahesh": false,
+  "pagal": "kutta"
+}

@@ -1,0 +1,35 @@
+{
+  "filetype": "table",
+  "rows": [
+    {
+      "a": 1,
+      "b": 0,
+      "c": "VANSH"
+    }
+  ],
+  "columns": [
+    {
+      "name": "a",
+      "type": "int",
+      "expression": "",
+      "constraints": [
+        "primary_key",
+        "serial"
+      ]
+    },
+    {
+      "name": "b",
+      "type": "derivative",
+      "expression": "IF(a%2==0,1,0)",
+      "constraints": []
+    },
+    {
+      "name": "c",
+      "type": "string",
+      "expression": "",
+      "constraints": [
+        "not_null"
+      ]
+    }
+  ]
+}
