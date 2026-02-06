@@ -309,10 +309,15 @@ ul.show{
     border-bottom: 1px solid #E5E7EB;
 }
 
+.popup-header span{
+    font-size: 18px;
+    font-weight: 600;
+}
+
 .popup-close{
     border: none;
     background: transparent;
-    font-size: 16px;
+    font-size: 24px;
     cursor: pointer;
     opacity: 0.6;
 }
@@ -321,7 +326,7 @@ ul.show{
 }
 
 .popup-body{
-    padding: 16px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -332,13 +337,14 @@ ul.show{
 }
 
 .popup-label{
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
     color: #374151;
+    margin-bottom: 2px;
 }
 
 .popup-input{
-    padding: 8px;
+    padding: 10px 12px;
     border-radius: 6px;
     border: 1px solid #E5E7EB;
     font-size: 14px;

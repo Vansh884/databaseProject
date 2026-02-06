@@ -97,7 +97,8 @@ form {
 
 .detail label {
   font-size: 0.9rem;
-  color: white;
+  /* color: white; */
+  color: black;
   letter-spacing: 0.3px;
 }
 

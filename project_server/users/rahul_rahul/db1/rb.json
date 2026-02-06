@@ -1,0 +1,52 @@
+{
+  "filetype": "json",
+  "firstname": "vansh",
+  "age": 25,
+  "marks": [
+    56.3,
+    67.3,
+    87.4,
+    98.2,
+    14.3
+  ],
+  "subjects": [
+    [
+      "english",
+      56.3
+    ],
+    [
+      "maths",
+      67.3
+    ]
+  ],
+  "friends": {
+    "name": [
+      "didar"
+    ],
+    "age": [
+      20,
+      50
+    ]
+  },
+  "subject_marks": [
+    20,
+    40,
+    60,
+    80,
+    null
+  ],
+  "check": [
+    1,
+    2,
+    3,
+    4,
+    {
+      "lname": [
+        1,
+        2,
+        3,
+        4
+      ]
+    }
+  ]
+}

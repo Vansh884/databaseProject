@@ -1,0 +1,35 @@
+{
+  "filetype": "table",
+  "rows": [
+    {
+      "Col1": 1,
+      "Col2": 20
+    },
+    {
+      "Col1": 2,
+      "Col2": 40
+    },
+    {
+      "Col1": 3,
+      "Col2": 60
+    }
+  ],
+  "columns": [
+    {
+      "name": "Col1",
+      "type": "int",
+      "expression": "",
+      "constraints": [
+        "primary_key"
+      ]
+    },
+    {
+      "name": "Col2",
+      "type": "int",
+      "expression": "",
+      "constraints": [
+        "not_null"
+      ]
+    }
+  ]
+}

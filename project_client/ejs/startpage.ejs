@@ -138,6 +138,7 @@
                             <button type="button" onclick="showbuttonset('6')">Split</button>
                             <button type="submit" name="tool" value="sort">Sort</button>
                             <button type="submit" name="tool" value="visualizedata">Visualize Data</button>
+                            <button type="submit" name="tool" value="spreadsheet">Spreadsheet</button>
                         </div>
 
 
@@ -2162,10 +2163,10 @@
                             <div class="popup-field" style="gap: 10px; margin-top: 5px;">
                                 <div class="popup-label">Columns</div>
                                     <div class="popup-checkboxes">
-                                            <% for (let i = 0; i<extra_data.data.columns.length; i++) { %>
+                                            <% for (let i = 0; i<extra_data.data.length; i++) { %>
                                                 <div>
-                                                    <input type="checkbox" name="column<%= i+1%>" value="<%= extra_data.data.columns[i].name%>" <% if (extra_data.data.columns[i].constraints.includes('primary_key')){ %>disabled<%}%>>
-                                                    <label for="column<%= i+1%>" class="popup-label"><%= extra_data.data.columns[i].name%></label>
+                                                    <input type="checkbox" name="column<%= i+1%>" value="<%= extra_data.data[i].name%>" <% if (extra_data.data[i].constraints.includes('primary_key')){ %>disabled<%}%>>
+                                                    <label for="column<%= i+1%>" class="popup-label"><%= extra_data.data[i].name%></label>
                                                 </div>
                                             <% } %>
                                     </div>
@@ -2196,7 +2197,7 @@
                                     
                                     <div class="conditions" id="horizontal_split_condition1" style="flex-direction: row; gap: 5px;">
                                         <select name="columns1">
-                                            <% for (let column of extra_data.data.columns) { %>
+                                            <% for (let column of extra_data.data) { %>
                                                 <option value="<%= column.name%>"><%= column.name%></option>
                                             <% } %>
                                         </select>
@@ -2237,7 +2238,7 @@
                                     <input name="value${horizontal_split_condition_count}" placeholder="Single Value"></input>
                                 <div>
                                 `;
-                            <% for (let column of extra_data.data.columns) { %>
+                            <% for (let column of extra_data.data) { %>
                                     document.querySelector(`#horizontal_split_condition${horizontal_split_condition_count} select`).innerHTML += `
                                         <option value="<%= column.name%>"><%= column.name%></option>
                                     `;
@@ -3373,7 +3374,7 @@
                 </div>                
 
                 <div class="popup-footer">
-                    <button type="submit" onclick="cancel_popup()" class="popup-primary-btn">Create</button>
+                    <button type="submit" onclick="cancel_popup()" class="popup-primary-btn">Insert</button>
                 </div>
 
                 </form>

@@ -8,7 +8,8 @@ import axios from 'axios';
 import bcrypt from 'bcrypt';
 import { isObject } from 'util';
 
-const port = 4000;
+// const port = 4000;
+const port = process.env.PORT || 4000;
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const api_url = 'http://localhost:4000';
@@ -2216,11 +2217,13 @@ app.post('/databasedetails', async function(req, res){
     const files = await fs.readdir(path.join(__dirname, "users", `${data.username}_${data.password}`, `${data.databasename}`), 'utf-8');
     let send_files_data = {};
     for(const file of files){
+        if (file.startsWith('query_history') || !file.endsWith('.txt.json')) continue;
         let file_data = await fs.readFile(path.join(__dirname, "users", `${data.username}_${data.password}`, `${data.databasename}`, `${file}`), 'utf-8');
         file_data = JSON.parse(file_data);
         delete file_data.rows;
         send_files_data[file]=file_data
     }
+    console.log(send_files_data)
     return res.json(send_files_data)
 });
 
@@ -2723,7 +2726,7 @@ app.post('/selectkeyvalue', async function(req, res){
     if (data.selected_keys.includes('all')){
         data.selected_keys.splice(data.selected_keys.indexOf('all'), 1);
     }
-    
+
     try{
         let file_data = await fs.readFile(path.join(__dirname , "users", `${data.username}_${data.password}`, `${data.databasename}`, `${data.filename}`), 'utf-8');
         file_data = JSON.parse(file_data);
@@ -3496,7 +3499,7 @@ app.post('/join', async function(req, res){
                             if (data.secondary_columns.includes(column.name) || dependant_columns2.includes(column.name)){
                                 console.log(column.name, column.type)
                                 if (column.type === "string"){
-                                    temp[column.name]="null";
+                                    temp[column.name]="";
                                 }
                                 else if (column.type === "int"){
                                     temp[column.name]=null;
@@ -3562,6 +3565,7 @@ app.post('/join', async function(req, res){
                 }
             }
         }
+        console.log(rows.length)
         
         //exporting
         if (data.export_table!='null'){
@@ -3571,8 +3575,6 @@ app.post('/join', async function(req, res){
             };
             await fs.writeFile(path.join(__dirname, "users", `${data.username}_${data.password}`, `${data.databasename}`, `${data.export_table}`),
                 JSON.stringify(file_data, null, 2));
-
-
             
             {
                 let query_history = await fs.readFile(
@@ -3581,7 +3583,6 @@ app.post('/join', async function(req, res){
                 );
                 query_history = JSON.parse(query_history);
                 query_history[data.export_table] = [];
-                console.log(query_history)
                 writeFileSync(
                     path.join(__dirname, "users", `${data.username}_${data.password}`, data.databasename, 'query_history.json'),
                     JSON.stringify(query_history, null, 2));

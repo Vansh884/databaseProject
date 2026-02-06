@@ -1,0 +1,50 @@
+{
+  "filetype": "table",
+  "rows": [
+    {
+      "id": 1,
+      "name": "rahul",
+      "birthyear": 2004,
+      "age": "illegal"
+    },
+    {
+      "id": 2,
+      "name": "rahul2",
+      "birthyear": 2008,
+      "age": "legal"
+    }
+  ],
+  "columns": [
+    {
+      "name": "id",
+      "type": "int",
+      "expression": "",
+      "constraints": [
+        "primary_key",
+        "serial"
+      ]
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "expression": "",
+      "constraints": [
+        "not_null"
+      ]
+    },
+    {
+      "name": "birthyear",
+      "type": "int",
+      "expression": "",
+      "constraints": [
+        "not_null"
+      ]
+    },
+    {
+      "name": "age",
+      "type": "derivative",
+      "expression": "IF(birthyear>2007,\"legal\",\"illegal\")",
+      "constraints": []
+    }
+  ]
+}

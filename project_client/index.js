@@ -54,6 +54,14 @@ app.get('/profile', async function(req, res){
     return res.render(__dirname + '/ejs/profile.ejs', {firstName: resp.data.firstname, lastName: resp.data.lastname, username: resp.data.username, lastLoggedIn: resp.data.last_logged_in, password: password});
 });
 
+app.get('/spreadsheet', async function(req, res){
+    let filename = req.query.filename, databasename = req.query.databasename;
+    let api_res = await axios.post(api_url + '/filedetails', {username: username, password: password, filename: filename, databasename: databasename});
+    return res.render(__dirname + '/ejs/spreadsheet.ejs', {
+        username: username, password: password, filename: filename, databasename: databasename, rows: api_res.data.rows, columns: api_res.data.columns
+    });
+});
+
 app.post('/change_profile', async function(req, res){
     let data = req.body;
     if (req.body.submit === 'logout'){
@@ -273,6 +281,9 @@ app.post('/user_dropdown', async function(req, res){
     else if (req.body.submit === 'profile'){
         return res.redirect('/profile');
     }
+    else if (req.body.submit === 'workspace'){
+        return res.redirect('/startpage')
+    }
 });
 
 app.post('/tools',async function(req, res){
@@ -429,7 +440,7 @@ app.post('/tools',async function(req, res){
         try{
             const api_res = await axios.post(api_url + '/columndetails', {username : username, password: password, filename: filename, databasename: databasename});
             console.log(api_res.data)
-            const query = encodeURIComponent(JSON.stringify(api_res.data));
+            const query = encodeURIComponent(JSON.stringify(api_res.data.columns));
             
             return res.redirect(`/startpage?choice=${req_choice}&filename=${filename}&databasename=${databasename}&data=${query}`);
         }
@@ -479,6 +490,9 @@ app.post('/tools',async function(req, res){
     }
     else if (req_choice === 'export'){
         return res.redirect(`/startpage?choice=export&filename=${filename}&databasename=${databasename}`);
+    }
+    else if (req_choice === 'spreadsheet'){
+        res.redirect(`/spreadsheet?filename=${filename}&databasename=${databasename}`);
     }
 
 });
@@ -1538,76 +1552,6 @@ app.post('/changeschema', async function(req, res){
 
 });
 
-// app.post('/import',upload.single('file'), async function(req, res){
-
-//     const req_body = req.body, file_data = req.file.buffer.toString('utf-8');
-//     let api_res, i=1, Message = 'Import Successful';
-
-//     const start = process.hrtime.bigint(); // high-res start
-
-//     let constraints = [], headers = [];
-//     req_body[`derivativeinfo`] = [];
-//     while(`columnname${i}` in req_body && `columntype${i}` in req_body){
-//         headers.push(req_body[`columnname${i}`]);
-//         req_body[`derivativeinfo`].push('');
-//         let temp = []
-//         if (req_body[`notnull${i}`] === 'on') temp.push('not_null')
-//         if (req_body[`primarykey${i}`] === 'on') temp.push('primary_key')
-//         if (req_body[`unique${i}`] === 'on') temp.push('unique')
-//         if (req_body[`serial${i}`] === 'on') temp.push('serial')
-//         constraints.push(temp)
-//         i++
-//     }
-//     try{
-//         api_res = await axios.post(api_url + '/newfile', {username : username, password: password, file_details : req_body, constraints: constraints});
-//         console.log(api_res.data.message);
-//     }
-//     catch(e){
-//         console.error('error creating new file ', e);
-//     }
-
-    
-//     let rows = Papa.parse(file_data, {
-//     header: false,
-//     skipEmptyLines: true
-//     }).data;
-
-//     let mappedRows = rows.map(row => {
-//         let obj = {};
-//         headers.forEach((h, i) => {
-//             obj[h] = row[i] ?? null;
-//         });
-//         return obj;
-//     });
-
-//     // console.log(mappedRows)
-//     mappedRows.splice(0, 1);
-
-
-//     //inserting data
-//     if (req_body.filetypeselect === 'table'){
-//         try{
-//             api_res = await axios.post(api_url + '/insertrow', {
-//                 username: username, password: password,
-//                 filename: `${req_body.filename}.txt.json`, databasename: req_body.databaseselect,
-//                 rows: mappedRows});
-//             console.log(api_res.data.message);
-//             if (!api_res.data.message.includes('Insertion Successful')) Message = 'Import Failed'
-            
-//         }
-//         catch(e){
-//             console.log('error inserting row ', e);
-//             console.log(api_res.data.message);
-//         }
-//     }
-//     else if (req_body.filetypeselect === 'json'){}
-
-//     const end = process.hrtime.bigint();   // high-res end
-//     const durationMs = Number(end - start) / 1e6;
-//     console.log(Message)
-//     return res.redirect(`/startpage?message=${Message}&time=Executed%20in%20${durationMs}%20ms.`);
-// });
-
 app.post('/import', upload.single('file'), async function(req, res){
     const req_body = req.body, file_data = req.file.buffer.toString('utf-8');
     let api_res, i=1;
@@ -1802,6 +1746,10 @@ app.post('/export',async function(req, res) {
     catch(e){
         console.log('error retrieving file details ', e);
     }
+});
+
+app.post('/spreadsheet', async function (req, res){
+    console.log(req.body)
 });
 
 app.listen(port, function(){
