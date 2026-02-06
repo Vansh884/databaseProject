@@ -18,9 +18,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 const port = 3000;
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const api_url = window.location.hostname === "localhost"
-    ? "http://localhost:4000"
-    : "https://gregoria-unvehement-serena.ngrok-free.dev";
+const api_url = process.env.API_BASE_URL;
+// : "https://gregoria-unvehement-serena.ngrok-free.dev";
 
 // let username  = null;
 // let password = null;
