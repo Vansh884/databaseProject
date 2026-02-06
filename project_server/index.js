@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import axios from 'axios';
 import bcrypt from 'bcrypt';
+import cors from "cors";
 
 // const port = 4000;
 const port = process.env.PORT || 4000;
@@ -14,6 +15,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const api_url = 'http://localhost:4000';
 const filepath = path.join(__dirname, '/meta_json/authentication.json');
 const salt_rounds = 10;
+
+app.use(cors({
+  origin: "*"
+}));
+
 
 app.set('view engine', 'ejs');
 
