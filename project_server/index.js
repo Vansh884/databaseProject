@@ -7,6 +7,7 @@ import path from 'path';
 import axios from 'axios';
 import bcrypt from 'bcrypt';
 import cors from "cors";
+//hi
 
 // const port = 4000;
 const port = process.env.PORT || 4000;
@@ -202,6 +203,7 @@ async function enter_new_user(details){
             data = await fs.readFile(filepath, 'utf-8');
             data = JSON.parse(data);
             details['last_logged_in']=new Date().toISOString();
+            details['credits'] = 0;
             data.push(details);
             try{
                 await fs.writeFile(filepath, JSON.stringify(data, null, 2));
@@ -1845,7 +1847,7 @@ app.post('/get_authentication_data', async function(req, res){
 
                 return res.json({firstname: line.firstname, lastname: line.lastname,
                 phone: line.phone, username: line.username,
-                last_logged_in: lastDate, password: line.password});
+                last_logged_in: lastDate, password: line.password, credits: line.credits});
             }
             else return res.send('error');
         }
@@ -2207,6 +2209,7 @@ app.post('/columndetails', async function(req, res){
     try{
         let file_data = await fs.readFile(path.join(__dirname, "users", `${data.username}_${data.password}`, `${data.databasename}`, `${data.filename}`), 'utf-8');
         file_data = JSON.parse(file_data);
+        console.log(file_data)
         return res.json(file_data);
     }
     catch(e){
@@ -3261,7 +3264,7 @@ app.post('/queryhistory', async function(req, res){
 
 app.post('/query', async function(req, res){
     const data = req.body;
-    let result, file_data, query = data.query;
+    let result, file_data,file_data2, query = data.query;
     try{
         result = await parse_query(data.query, data.username, data.password, data.databasename, data.filename);
         console.log(result);
@@ -3270,6 +3273,7 @@ app.post('/query', async function(req, res){
         console.log(e);
     }
     res.json(result);
+    console.log(2)
 
     try {
         file_data = await fs.readFile(
@@ -3278,6 +3282,25 @@ app.post('/query', async function(req, res){
         );
         file_data = JSON.parse(file_data);
         file_data[data.filename].push(query);
+
+        file_data2 = await fs.readFile(filepath, 'utf-8');
+        file_data2 = JSON.parse(file_data2);
+        for (let line of file_data2){
+            if (line.username === req.body.username){
+                console.log('hey')
+                const match = await bcrypt.compare(req.body.password, line.password);
+                console.log('hey')
+                console.log(match?'1':'0')
+                if (match){
+                    line.credits += 1;
+                    console.log(1)
+                    console.log(line.credits)
+                    await fs.writeFile(filepath, JSON.stringify(file_data2, null, 2));
+                    break;
+                }
+            }
+        }
+
         await fs.writeFile(
             path.join(__dirname, "users", `${data.username}_${data.password}`, data.databasename, 'query_history.json'),
             JSON.stringify(file_data, null, 2)
@@ -3631,8 +3654,6 @@ app.post('/split', async function(req, res){
 
         //new column adding
 
-        
-        
         if(type==='verticalsplit'){
 
             let latest_column_names = [];
@@ -3807,7 +3828,7 @@ app.post('/split', async function(req, res){
                     'utf-8'
                 );
                 query_history = JSON.parse(query_history);
-                query_history[data.new_table_name] = [];
+                query_history[`${data.new_table_name}.txt.json`] = [];
                 console.log(query_history)
                 writeFileSync(
                     path.join(__dirname, "users", `${data.username}_${data.password}`, data.databasename, 'query_history.json'),
@@ -4317,6 +4338,25 @@ app.post('/temp_file_writer', async function(req, res){
                 JSON.stringify(data.file_data, null, 2)
             );
     res.json({message: "successful"});
+});
+
+app.post('/deduct_credit', async function(req, res){
+    let file_data = await fs.readFile(filepath, 'utf-8');
+    file_data = JSON.parse(file_data);
+    for (let line of file_data){
+        if (line.username === req.body.username){
+            const match = await bcrypt.compare(req.body.password, line.password);
+            if (match){
+                console.log(line.credits)
+                if (line.credits >= 20){
+                    line.credits -= 20;
+                    await fs.writeFile(filepath, JSON.stringify(file_data, null, 2));
+                    return res.json({message: true});
+                }
+                else return res.json({message: false});
+            }
+        }
+    }
 });
 
 app.listen(port, function(){

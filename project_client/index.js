@@ -19,6 +19,7 @@ const port = 3000;
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const api_url = process.env.API_BASE_URL;
+const local_api_url = "http://localhost:3000";
 // : "https://gregoria-unvehement-serena.ngrok-free.dev";
 
 // let username  = null;
@@ -52,7 +53,7 @@ app.get('/profile', async function(req, res){
     }
     console.log(username, password)
     const resp = await axios.post(api_url + '/get_authentication_data', {username: username, password: password});
-    return res.render(__dirname + '/ejs/profile.ejs', {firstName: resp.data.firstname, lastName: resp.data.lastname, username: resp.data.username, lastLoggedIn: resp.data.last_logged_in, password: password});
+    return res.render(__dirname + '/ejs/profile.ejs', {firstName: resp.data.firstname, lastName: resp.data.lastname, username: resp.data.username, lastLoggedIn: resp.data.last_logged_in, password: password, credits: resp.data.credits});
 });
 
 app.get('/spreadsheet', async function(req, res){
@@ -165,7 +166,7 @@ app.get('/startpage',async function(req, res){
         else if (choice1 === 'selectkeyvalue' || choice1 === 'deletekeyvalue'){
             extra_data = { data: JSON.parse(req.query.data)}
         }
-        else if (choice1 === 'updaterow' || choice1 === 'updatekeyvalue' || choice1 === 'sort' || choice1 === 'visualizedata' || choice1 === 'visualizedataresult'){
+        else if (choice1 === 'updaterow' || choice1 === 'updatekeyvalue' || choice1 === 'sort' || choice1 === 'visualizedata'){
             extra_data = { data: JSON.parse(req.query.data)};
         }
         else if (choice1 === 'tableschema' || choice1 === 'changeschema' || choice1 === 'jsonschema' || choice1?.endsWith('split')){
@@ -179,6 +180,20 @@ app.get('/startpage',async function(req, res){
         else if (choice1 === 'querytool'){
             extra_data = {data: JSON.parse(req.query.queries)};
             console.log(extra_data.data)
+        }
+        else if (choice1 === 'visualizedataresult'){
+            let file_data = await fs.readFile(
+                        path.join(__dirname, "temp_data.json"),
+                        'utf-8'
+                    );
+                
+            file_data = JSON.parse(file_data);
+            let temp_data = JSON.parse(req.query.data);
+            temp_data['rows'] = file_data.rows;
+            temp_data['columns'] = file_data.columns;
+            temp_data['aiuse'] = req.query.aiuse;
+            extra_data = { data: temp_data};
+            await fs.unlink(path.join(__dirname, "temp_data.json"));
         }
     }
     //for output showing
@@ -462,13 +477,17 @@ app.post('/tools',async function(req, res){
     }
     else if (req_choice === 'visualizedata'){
         try{
-            const api_res = await axios.post(api_url + '/columndetails', {username : username, password: password, filename: filename, databasename: databasename});
-            const query = encodeURIComponent(JSON.stringify(api_res.data));
+            let api_res = await axios.post(api_url + '/columndetails', {username : username, password: password, filename: filename, databasename: databasename});
+            let rowlength = api_res.data.rows.length;
+            api_res = api_res.data;
+            api_res.rows = api_res.rows.slice(0, 15)
+            api_res['rowlength'] = rowlength;
+            const query = encodeURIComponent(JSON.stringify(api_res));
             
             return res.redirect(`/startpage?choice=visualizedata&filename=${filename}&databasename=${databasename}&data=${query}`);
         }
         catch(e){
-            console.error('error retrieving file columnar details')
+            console.error('error retrieving file columnar details', e)
         }
     }
     else if (req_choice === 'find'){
@@ -1271,12 +1290,25 @@ app.post('/sort', async function(req, res){
 
 app.post('/visualizedata', async function(req, res){
     console.log(req.body);
-    let userSelection = req.body, response;
+    let userSelection = req.body, response, aiuse = false;
 
     let filename = req.body.filename, databasename = req.body.databasename;
 
     delete userSelection.filename;
     delete userSelection.databasename;
+    if (userSelection.aiuse){
+        console.log(1)
+        try{
+            let temp_api_res = await axios.post(api_url + '/deduct_credit', {username : username, password: password, filename: filename, databasename: databasename});
+            if (temp_api_res.data.message !== true){
+                return res.redirect(`/startpage?message=Insufficient%20Credits%20For%20Inferential%20Analysis&filename${filename}&databasename=${databasename}`)
+            }
+            else aiuse = true;
+        }
+        catch(e){
+            console.log('error deducting credit', e);
+        }
+    }
     try{
             let api_res = await axios.post(api_url + '/columndetails', {username : username, password: password, filename: filename, databasename: databasename});
             api_res=api_res.data;
@@ -1285,7 +1317,7 @@ app.post('/visualizedata', async function(req, res){
             api_res['valueY']=req.body.value_y;
             api_res['groupBy']=req.body.group_by;
             
-            let rows = api_res.rows;
+            let rows = api_res.rows.slice(req.body.rowmin, req.body.rowmax);
             let columns = api_res.columns;
 
             let prompt = `
@@ -1337,11 +1369,22 @@ app.post('/visualizedata', async function(req, res){
                 res.status(500).json({ error: "AI analysis failed" });
             }
 
+            //temporarily storing data in a separate file
+            let temp_data_save = await axios.post(local_api_url + '/temp_file_maker', {file_data: {rows : rows, columns: api_res.columns, filetype: 'table'}});
+            console.log(temp_data_save.data)
+
+            delete api_res.rows;
+            delete api_res.columns;
+
+            // if (!response?.data?.choices) {
+            //     console.log("LLM request failed or throttled");
+            //     return res.json({ message: "LLM busy, try again" });
+            // }
             api_res['aidata']=response.choices[0].message.content;
             console.log(api_res)
             let query = encodeURIComponent(JSON.stringify(api_res));
             
-            return res.redirect(`/startpage?choice=visualizedataresult&filename=${filename}&databasename=${databasename}&data=${query}`);
+            return res.redirect(`/startpage?choice=visualizedataresult&filename=${filename}&databasename=${databasename}&data=${query}&aiuse=${aiuse}`);
         }
         catch(e){
             console.error('error retrieving file columnar details', e)
@@ -1751,6 +1794,65 @@ app.post('/export',async function(req, res) {
 
 app.post('/spreadsheet', async function (req, res){
     console.log(req.body)
+    let api_res, Message, success;
+    const filename=req.body.filename, databasename = req.body.databasename;
+
+    const start = process.hrtime.bigint(); // high-res start
+        let file_data;
+        try{
+            file_data = await axios.post(api_url + '/columndetails', {
+                username: username, password: password,
+                filename: filename, databasename: databasename
+            });
+            file_data = file_data.data;
+        }
+        catch(e){
+            console.log('error retrieving file data ', e);
+        }
+
+        let temp_file_data = {
+                "filetype": "table",
+                "rows": [],
+                "columns": req.body.columns
+            };
+
+            let temp_api_res = await axios.post(api_url + '/temp_file_writer', {
+                username: username, password: password,
+                filename: filename, databasename: databasename,
+                file_data: temp_file_data
+            });
+            
+
+            api_res = await axios.post(api_url + '/insertrow', {
+                username: username, password: password,
+                filename: filename, databasename: databasename,
+                rows: req.body.rows
+            });
+            console.log(api_res.data.message)
+            if (api_res.data.message !== 'Insertion Successful'){
+                success = false;
+                Message = api_res.data.message
+                temp_api_res = await axios.post(api_url + '/temp_file_writer', {
+                    username: username, password: password,
+                    filename: filename, databasename: databasename,
+                    file_data: file_data
+                });
+            }
+            else{
+                Message = "Spreadsheet Change Successful";
+                success = true;
+            }
+            const end = process.hrtime.bigint();   // high-res end
+            const durationMs = Number(end - start) / 1e6;
+            // return res.redirect(`/startpage?message=${api_res.data.message}&time=Executed%20in%20${durationMs}%20ms.`);
+            // return res.redirect(`/spreadsheet?filename=${filename}&databasename=${databasename}`);
+            return res.json({success: success, message: Message})
+});
+
+app.post('/temp_file_maker', async function(req, res){
+    let data = req.body;
+    await fs.writeFile( path.join(__dirname, "temp_data.json"), JSON.stringify(data.file_data, null, 2));
+    res.json({message: "successful"});
 });
 
 app.listen(port, function(){

@@ -40,6 +40,7 @@
                 <button class="btn-toolbar" id="addRowBtn">➕ Add Row</button>
                 <button class="btn-toolbar" id="deleteRowBtn">🗑️ Delete Row</button>
                 <button class="btn-toolbar" id="addColumnBtn">➕ Add Column</button>
+                <button class="btn-toolbar" id="deleteColumnBtn">🗑️ Delete Column</button>
                 <button class="btn-toolbar" id="undoBtn">↶ Undo</button>
             </div>
             <div class="toolbar-right">
@@ -149,22 +150,22 @@
                     <label>Column Constraints:</label>
                     <div class="constraints">
                         <div class="constraint">
-                            <input type="checkbox" name="constraints[]">&nbsp;
+                            <input type="checkbox" name="constraints[]" value="not_null">&nbsp;
                             <label>Not Null</label>&nbsp;
                         </div>
 
                         <div class="constraint">
-                            <input type="checkbox" name="constraints[]">&nbsp;
+                            <input type="checkbox" name="constraints[]" value="primary_key">&nbsp;
                             <label>Primary Key</label>&nbsp;
                         </div>
 
                         <div class="constraint">
-                            <input type="checkbox" name="constraints[]">&nbsp;
+                            <input type="checkbox" name="constraints[]" value="unique">&nbsp;
                             <label>Unique</label>&nbsp;
                         </div>
 
                         <div class="constraint">
-                            <input type="checkbox" name="constraints[]">&nbsp;
+                            <input type="checkbox" name="constraints[]" value="serial">&nbsp;
                             <label>Serial</label>
                         </div>
                     </div>
@@ -200,6 +201,7 @@
         const saveBtn = document.getElementById('saveBtn');
         const addRowBtn = document.getElementById('addRowBtn');
         const deleteRowBtn = document.getElementById('deleteRowBtn');
+        const deleteColumnBtn = document.getElementById('deleteColumnBtn');
         const addColumnBtn = document.getElementById('addColumnBtn');
         const undoBtn = document.getElementById('undoBtn');
         const cellInfo = document.getElementById('cellInfo');
@@ -239,7 +241,8 @@
                 if (!changes[row]) changes[row] = {};
                 
                 if (newValue !== originalValue) {
-                    changes[row][column] = newValue;
+                    rowsData[parseInt(row)][column] = newValue;
+                    changes[row] = rowsData[parseInt(row)];
                     cell.classList.add('modified');
                 } else {
                     delete changes[row][column];
@@ -341,6 +344,56 @@
                 columnsData.pop();
                 
                 document.getElementById('colCount').textContent = `${columnsData.length} columns`;
+            } else if (lastAction.type === 'deleteColumn') {
+                // Restore the deleted column
+                const { columnIndex, column, columnData } = lastAction;
+                
+                // Add back to columnsData
+                columnsData.splice(columnIndex, 0, column);
+                
+                // Add header back
+                const headerRow = spreadsheet.querySelector('thead tr');
+                const headers = headerRow.querySelectorAll('th');
+                const newHeader = document.createElement('th');
+                newHeader.className = 'column-header';
+                newHeader.dataset.column = column.name;
+                newHeader.innerHTML = `
+                    ${column.name}
+                    <span class="column-type">${column.type}</span>
+                    ${column.type === 'derivative' && column.expression ? `<span class="expression-icon" title="Expression: ${column.expression}">📐</span>` : ''}
+                `;
+                
+                if (columnIndex + 1 < headers.length) {
+                    headers[columnIndex + 1].insertAdjacentElement('beforebegin', newHeader);
+                } else {
+                    headerRow.appendChild(newHeader);
+                }
+                
+                // Add cells back to all rows
+                const rows = spreadsheet.querySelectorAll('tbody tr');
+                rows.forEach((row, rowIdx) => {
+                    const cells = row.querySelectorAll('td');
+                    const newCell = document.createElement('td');
+                    newCell.className = `cell ${column.type === 'derivative' ? 'derivative-cell' : ''}`;
+                    newCell.dataset.column = column.name;
+                    newCell.dataset.type = column.type;
+                    newCell.dataset.row = rowIdx;
+                    newCell.dataset.original = columnData[rowIdx] || '';
+                    newCell.contentEditable = column.type !== 'derivative';
+                    newCell.textContent = columnData[rowIdx] || '';
+                    
+                    if (columnIndex + 1 < cells.length) {
+                        cells[columnIndex + 1].insertAdjacentElement('beforebegin', newCell);
+                    } else {
+                        row.appendChild(newCell);
+                    }
+                    
+                    // Restore to rowsData
+                    rowsData[rowIdx][column.name] = columnData[rowIdx] || (column.type === 'string' ? '' : null);
+                });
+                
+                // Update column count
+                document.getElementById('colCount').textContent = `${columnsData.length} columns`;
             }
 
             updateUndoButton();
@@ -379,6 +432,11 @@
             // }
 
             try {
+                //replacing old rows with changed ones
+                for (let change in changes){
+                    // alert(parseInt(change), rows[parseInt(change)])
+                    rowsData[parseInt(change)]=changes[change];
+                }
                 const response = await fetch('/spreadsheet', {
                     method: 'POST',
                     headers: {
@@ -387,7 +445,6 @@
                     body: JSON.stringify({
                         filename: '<%= filename %>',
                         databasename: '<%= databasename %>',
-                        changes: changes,
                         columns: columnsData,
                         rows: rowsData
                     })
@@ -432,7 +489,7 @@
             newRow.dataset.rowIndex = rowCount;
             
             let rowHTML = `<td class="row-number">${rowCount + 1}</td>`;
-            columns.forEach(col => {
+            columnsData.forEach(col => {
                 const isDerivative = col.type === 'derivative';
                 rowHTML += `
                     <td 
@@ -447,14 +504,14 @@
             });
 
             //adding new row into the column
-            // let temp = {};
-            // columnsData.forEach(c => {
-            //     let value;
-            //     if (c.type === 'string') value="";
-            //     else value=null;
-            //     temp[c.name]=value;
-            // });
-            // rowsData.push(temp_row);
+            let temp = {};
+            columnsData.forEach(c => {
+                let value;
+                if (c.type === 'string') value="";
+                else value=null;
+                temp[c.name]=value;
+            });
+            rowsData.push(temp);
             
             newRow.innerHTML = rowHTML;
             tbody.appendChild(newRow);
@@ -476,7 +533,7 @@
             }
 
             const row = currentCell.closest('tr');
-            if (confirm('Are you sure you want to delete this row?')) {
+            if (confirm('Are you sure you want to delete this row ?')) {
                 const rowIndex = Array.from(row.parentElement.children).indexOf(row);  // ← ADD
                 const rowHTML = row.outerHTML;  // ← ADD
                 
@@ -502,6 +559,71 @@
             }
         });
 
+        // Delete selected column
+        deleteColumnBtn.addEventListener('click', () => {
+            if (!currentCell) {
+                alert('Please select a cell in the column you want to delete');
+                return;
+            }
+
+            const columnName = currentCell.dataset.column;
+            const columnIndex = columnsData.findIndex(col => col.name === columnName);
+
+            if (columnIndex === -1) {
+                alert('Column not found');
+                return;
+            }
+
+            if (confirm(`Are you sure you want to delete column "${columnName}"?`)) {
+                // Store column data for undo
+                const deletedColumn = columnsData[columnIndex];
+                const columnData = {};
+                
+                // Collect all cell data from this column
+                spreadsheet.querySelectorAll('tbody tr').forEach((row, rowIdx) => {
+                    const cell = row.querySelector(`td[data-column="${columnName}"]`);
+                    if (cell) {
+                        columnData[rowIdx] = cell.textContent;
+                    }
+                });
+
+                // Add to undo stack
+                undoStack.push({
+                    type: 'deleteColumn',
+                    columnIndex: columnIndex,
+                    column: deletedColumn,
+                    columnData: columnData
+                });
+                updateUndoButton();
+
+                // Remove from columnsData
+                columnsData.splice(columnIndex, 1);
+
+                // Remove header
+                const header = spreadsheet.querySelector(`thead th[data-column="${columnName}"]`);
+                if (header) header.remove();
+
+                // Remove cells from all rows
+                spreadsheet.querySelectorAll(`tbody td[data-column="${columnName}"]`).forEach(cell => {
+                    cell.remove();
+                });
+
+                // Remove from rowsData
+                rowsData.forEach(row => {
+                    delete row[columnName];
+                });
+
+                // Update column count
+                document.getElementById('colCount').textContent = `${columnsData.length} columns`;
+
+                // Clear current cell selection
+                if (currentCell && currentCell.dataset.column === columnName) {
+                    currentCell = null;
+                    selectedCell.textContent = 'Cell: None';
+                    cellInfo.textContent = 'No cell selected';
+                }
+            }
+        });
         // Update change count
         function updateChangeCount() {
             const count = Object.keys(changes).reduce((acc, row) => {
@@ -578,7 +700,6 @@
                 document.querySelectorAll('.constraints input[name="constraints[]"]:checked')
                 ).map(cb => cb.value);
 
-                console.log(constraints);
 
 
             // Add to columns data

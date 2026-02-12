@@ -4,62 +4,114 @@
     {
       "ID": 1,
       "NAME": "VANSH",
-      "PASS": "PASS"
+      "PASS": "PASS",
+      "SERIAL_CHECK": 1,
+      "LIKE": 11,
+      "LIKE2": "NO"
     },
     {
       "ID": 2,
       "NAME": "PRIYA",
-      "PASS": "PASS"
+      "PASS": "PASS",
+      "SERIAL_CHECK": 2,
+      "LIKE": 12,
+      "LIKE2": "NO"
     },
     {
       "ID": 3,
       "NAME": "RACHIT",
-      "PASS": "FAIL"
+      "PASS": "FAIL",
+      "SERIAL_CHECK": 3,
+      "LIKE": 13,
+      "LIKE2": "NO"
     },
     {
       "ID": 4,
       "NAME": "LAXMAN",
-      "PASS": "FAIL"
+      "PASS": "FAIL",
+      "SERIAL_CHECK": 4,
+      "LIKE": 14,
+      "LIKE2": "NO"
     },
     {
       "ID": 5,
       "NAME": "KISHOR",
-      "PASS": "FAIL"
+      "PASS": "FAIL",
+      "SERIAL_CHECK": 5,
+      "LIKE": 15,
+      "LIKE2": "NO"
     },
     {
       "ID": 6,
       "NAME": "MUNISH",
-      "PASS": "PASS"
+      "PASS": "PASS",
+      "SERIAL_CHECK": 6,
+      "LIKE": 16,
+      "LIKE2": "YES"
     },
     {
       "ID": 7,
       "NAME": "KARTIK",
-      "PASS": "FAIL"
+      "PASS": "FAIL",
+      "SERIAL_CHECK": 7,
+      "LIKE": 17,
+      "LIKE2": "NO"
     },
     {
       "ID": 8,
       "NAME": "PARMEET",
-      "PASS": "PASS"
+      "PASS": "PASS",
+      "SERIAL_CHECK": 8,
+      "LIKE": 18,
+      "LIKE2": "YES"
     },
     {
       "ID": 9,
       "NAME": "ROOP",
-      "PASS": "FAIL"
+      "PASS": "FAIL",
+      "SERIAL_CHECK": 9,
+      "LIKE": 19,
+      "LIKE2": "NO"
     },
     {
       "ID": 10,
       "NAME": "MOHIT",
-      "PASS": "PASS"
+      "PASS": "PASS",
+      "SERIAL_CHECK": 10,
+      "LIKE": 20,
+      "LIKE2": "YES"
     },
     {
       "ID": 11,
       "NAME": "SATISH",
-      "PASS": "FAIL"
+      "PASS": "FAIL",
+      "SERIAL_CHECK": 11,
+      "LIKE": 21,
+      "LIKE2": "NO"
     },
     {
       "ID": 12,
       "NAME": "TANVEER",
-      "PASS": "PASS"
+      "PASS": "PASS",
+      "SERIAL_CHECK": 12,
+      "LIKE": 22,
+      "LIKE2": "NO"
+    },
+    {
+      "ID": 13,
+      "NAME": "RAHUL",
+      "PASS": "FAIL",
+      "SERIAL_CHECK": 13,
+      "LIKE": 23,
+      "LIKE2": "NO"
+    },
+    {
+      "ID": 14,
+      "NAME": "RAJESH",
+      "PASS": "PASS",
+      "SERIAL_CHECK": 14,
+      "LIKE": 24,
+      "LIKE2": "NO"
     }
   ],
   "columns": [
@@ -88,6 +140,26 @@
       "constraints": [
         "not_null"
       ]
+    },
+    {
+      "name": "SERIAL_CHECK",
+      "type": "int",
+      "expression": "",
+      "constraints": [
+        "serial"
+      ]
+    },
+    {
+      "name": "LIKE",
+      "type": "derivative",
+      "expression": "ID+10",
+      "constraints": []
+    },
+    {
+      "name": "LIKE2",
+      "type": "derivative",
+      "expression": "IF(ID>=5&&SERIAL_CHECK<=10&&PASS==\"PASS\",\"YES\",\"NO\")",
+      "constraints": []
     }
   ]
 }

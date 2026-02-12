@@ -1525,6 +1525,7 @@
                 const categoryX = "<%= extra_data.data.categoryX %>";
                 const valueY = "<%= extra_data.data.valueY %>";
                 const groupBy = "<%= extra_data.data.groupBy %>";
+                const aiuse = "<%= extra_data.data.aiuse%>";
 
                 const aiText = <%- JSON.stringify(extra_data.data.aidata || '') %>;
                 const cleanAIText = aiText
@@ -1882,7 +1883,7 @@
                 renderSnapshot();
                 renderStatisticsTab()
                 renderAggregates();
-                renderAIInsights();
+                if (aiuse === 'true') renderAIInsights();
                 renderTable();
                 
 
@@ -1919,6 +1920,17 @@
                             </div>
                         </div>
 
+                        <div class="popup-field">
+                            <div class="popup-label">Row Range</div>
+                            <div>
+                                <label for="rowmin" class="popup-label">Starting Row Index</label>
+                                <input name="rowmin" type="number" min="0" max="<%= extra_data.data.rowlength-2%>" class="popup-input">
+
+                                <label for="rowmax" class="popup-label">Ending Row Index</label>
+                                <input name="rowmax" type="number" min="1" max="<%= extra_data.data.rowlength-1%>" class="popup-input">
+                            </div>
+                        </div>
+
                         <div class="popup-field checkboxes-div" style="margin-top: 5px;">
                             <div class="popup-label">Data Mapping</div>
                             
@@ -1950,12 +1962,16 @@
                                         <% } %>
                                     </select>
                                 </div>
+                        </div>
 
+                        <div class="spare-class">
+                            <input type="checkbox" name="aiuse" value="true">
+                            <label for="aiuse" class="popup-label">Use AI Model For Inferential Analysis ( 🪹 20 Credits )</label>
                         </div>
 
                         <div class="popup-field">
                             <div class="popup-label">Live Preview</div>
-                            <canvas id="chartPreview" height="200"></canvas>
+                            <canvas id="chartPreview" height="250" width="1000"></canvas>
                         </div>
                     </div>
 
